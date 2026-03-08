@@ -97,10 +97,14 @@ final class SettingsManager: ObservableObject {
     
     private init() {
         let storedInterval = UserDefaults.standard.integer(forKey: refreshIntervalKey)
-        self.refreshInterval = storedInterval == 0 ? 45 : storedInterval
+        // 检查存储的间隔是否在允许的列表中，不在则重置为5秒
+        let allowedIntervals = [5, 10, 15, 30, 60]
+        self.refreshInterval = allowedIntervals.contains(storedInterval) ? storedInterval : 5
         
         let storedCarouselInterval = UserDefaults.standard.integer(forKey: carouselIntervalKey)
-        self.carouselInterval = storedCarouselInterval == 0 ? 10 : storedCarouselInterval
+        // 检查轮播间隔是否在允许的列表中，不在则重置为5秒
+        let allowedCarouselIntervals = [3, 5, 10, 15, 20]
+        self.carouselInterval = allowedCarouselIntervals.contains(storedCarouselInterval) ? storedCarouselInterval : 5
         
         if let langString = UserDefaults.standard.string(forKey: languageKey),
            let lang = AppLanguage(rawValue: langString) {
@@ -109,11 +113,12 @@ final class SettingsManager: ObservableObject {
             self.language = .zh
         }
         
+        // 优先使用存储的价格单位，如果没有则使用USDT，不受语言影响
         if let unitString = UserDefaults.standard.string(forKey: priceUnitKey),
            let unit = PriceUnit(rawValue: unitString) {
             self.priceUnit = unit
         } else {
-            self.priceUnit = .cny
+            self.priceUnit = .usdt
         }
     }
     

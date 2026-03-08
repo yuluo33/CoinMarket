@@ -31,7 +31,6 @@ struct SettingsView: View {
                             lang in
                             Button(action: {
                                 settings.language = lang
-                                settings.priceUnit = lang.defaultPriceUnit
                             }) {
                                 Text(lang.displayName)
                                     .font(.system(size: 12, weight: settings.language == lang ? .semibold : .regular))
@@ -158,7 +157,8 @@ struct SettingsView: View {
                 
                 Spacer()
             }
-            .padding()
+            .padding(20)
+            .padding(.top, 20) // 增加顶部内边距，使内容距离标题不要太近
         }
         .frame(width: 400, height: 450)
     }

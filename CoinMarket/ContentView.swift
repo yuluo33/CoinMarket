@@ -43,7 +43,7 @@ struct ContentView: View {
             SettingsView()
         }
         .toast(isShowing: $showToast, type: toastType, message: toastMessage, duration: 1.5)
-        .onChange(of: favoritesManager.lastAction) { _, newValue in
+        .onChange(of: favoritesManager.lastAction) { newValue in
             if let action = newValue {
                 toastMessage = "\(action.action) \(action.coin)"
                 toastType = action.action == "已收藏".localized ? .success : .error

@@ -39,7 +39,7 @@ struct CryptoListView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
         }
-        .onChange(of: currenciesHash) { _, _ in
+        .onChange(of: currenciesHash) { _ in
             appearedIds.removeAll()
             for (index, currency) in currencies.enumerated() {
                 let animation = Animation.easeOut(duration: 0.3)
