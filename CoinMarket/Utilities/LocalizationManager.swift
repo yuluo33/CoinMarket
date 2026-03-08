@@ -6,10 +6,23 @@ final class LocalizationManager: ObservableObject {
     
     private let settings = SettingsManager.shared
     
+    private var cancellables = Set<AnyCancellable>()
+    
+    private init() {
+        // 监听语言变化，触发objectWillChange
+        settings.$language
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
+    
     private var translations: [AppLanguage: [String: String]] = [
         .zh: [
             "设置": "设置",
             "语言": "语言",
+            "价格单位": "价格单位",
+            "搜索币种": "搜索币种",
             "自动刷新间隔": "自动刷新间隔",
             "状态栏轮播间隔": "状态栏轮播间隔",
             "API 数据源": "API 数据源",
@@ -40,6 +53,8 @@ final class LocalizationManager: ObservableObject {
         .en: [
             "设置": "Settings",
             "语言": "Language",
+            "价格单位": "Price Unit",
+            "搜索币种": "Search Currency",
             "自动刷新间隔": "Auto Refresh",
             "状态栏轮播间隔": "Status Bar Interval",
             "API 数据源": "API Source",
@@ -70,6 +85,8 @@ final class LocalizationManager: ObservableObject {
         .ja: [
             "设置": "設定",
             "语言": "言語",
+            "价格单位": "価格単位",
+            "搜索币种": "コイン検索",
             "自动刷新间隔": "自動更新間隔",
             "状态栏轮播間隔": "ステータスバー更新間隔",
             "API 数据源": "API データソース",
@@ -95,11 +112,14 @@ final class LocalizationManager: ObservableObject {
             "正在切换单位...": "通貨単位を変更中...",
             "单位已切换": "通貨単位を変更しました",
             "每秒更新": "%@秒ごとに更新",
-            "選択価格単位": "通貨を選択"
+            "選択価格単位": "通貨を選択",
+            "选择价格单位": "通貨を選択"
         ],
         .ko: [
             "设置": "설정",
             "语言": "언어",
+            "价格单位": "가격 단위",
+            "搜索币种": "코인 검색",
             "自动刷新间隔": "자동 새로고침 간격",
             "状态栏轮播间隔": "상태 표시줄 간격",
             "API 数据源": "API 데이터 소스",
@@ -130,6 +150,8 @@ final class LocalizationManager: ObservableObject {
         .vi: [
             "设置": "Cài đặt",
             "语言": "Ngôn ngữ",
+            "价格单位": "Đơn vị giá",
+            "搜索币种": "Tìm coin",
             "自动刷新间隔": "Tự động làm mới",
             "状态栏轮播间隔": "Thanh trạng thái",
             "API 数据源": "Nguồn API",
@@ -158,8 +180,6 @@ final class LocalizationManager: ObservableObject {
             "选择价格单位": "Chọn tiền tệ"
         ]
     ]
-    
-    private init() {}
     
     func t(_ key: String) -> String {
         let lang = settings.language

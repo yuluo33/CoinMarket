@@ -71,8 +71,8 @@ struct ToastModifierWithTimer: ViewModifier {
                 .padding(.top, 60)
             }
         }
-        .onChange(of: isShowing) { newValue in
-            if newValue {
+        .onChange(of: isShowing) {
+            if isShowing {
                 DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
                     withAnimation(.easeOut(duration: 0.3)) {
                         isShowing = false

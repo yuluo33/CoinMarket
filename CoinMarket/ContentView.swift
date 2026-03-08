@@ -43,8 +43,8 @@ struct ContentView: View {
             SettingsView()
         }
         .toast(isShowing: $showToast, type: toastType, message: toastMessage, duration: 1.5)
-        .onChange(of: favoritesManager.lastAction) { newValue in
-            if let action = newValue {
+        .onChange(of: favoritesManager.lastAction) {
+            if let action = favoritesManager.lastAction {
                 toastMessage = "\(action.action) \(action.coin)"
                 toastType = action.action == "已收藏".localized ? .success : .error
                 showToast = true
@@ -54,12 +54,6 @@ struct ContentView: View {
     
     private var headerView: some View {
         HStack(spacing: 12) {
-            Image("AppIcon")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 32, height: 32)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-            
             Text("CoinMarket".localized)
                 .font(.system(size: 22, weight: .bold))
                 .foregroundColor(.primary)
@@ -75,14 +69,14 @@ struct ContentView: View {
                 Image(systemName: "gearshape")
                     .font(.system(size: 14))
                     .foregroundColor(.primary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.gray.opacity(0.2))
+                    }
             }
             .buttonStyle(.plain)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
-            .background {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(Color.gray.opacity(0.2))
-            }
         }
     }
     

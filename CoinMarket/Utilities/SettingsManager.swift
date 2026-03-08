@@ -96,15 +96,17 @@ final class SettingsManager: ObservableObject {
     private let languageKey = "app_language"
     
     private init() {
-        let storedInterval = UserDefaults.standard.integer(forKey: refreshIntervalKey)
-        // 检查存储的间隔是否在允许的列表中，不在则重置为5秒
+        // 强制设置默认值，确保第一次启动时正确
+        // 对于已存在的设置，保留用户的选择
+        let refreshIntervalValue = UserDefaults.standard.object(forKey: refreshIntervalKey) as? Int
         let allowedIntervals = [5, 10, 15, 30, 60]
-        self.refreshInterval = allowedIntervals.contains(storedInterval) ? storedInterval : 5
+        self.refreshInterval = refreshIntervalValue != nil ? 
+            (allowedIntervals.contains(refreshIntervalValue!) ? refreshIntervalValue! : 5) : 5
         
-        let storedCarouselInterval = UserDefaults.standard.integer(forKey: carouselIntervalKey)
-        // 检查轮播间隔是否在允许的列表中，不在则重置为5秒
+        let carouselIntervalValue = UserDefaults.standard.object(forKey: carouselIntervalKey) as? Int
         let allowedCarouselIntervals = [3, 5, 10, 15, 20]
-        self.carouselInterval = allowedCarouselIntervals.contains(storedCarouselInterval) ? storedCarouselInterval : 5
+        self.carouselInterval = carouselIntervalValue != nil ? 
+            (allowedCarouselIntervals.contains(carouselIntervalValue!) ? carouselIntervalValue! : 5) : 5
         
         if let langString = UserDefaults.standard.string(forKey: languageKey),
            let lang = AppLanguage(rawValue: langString) {

@@ -85,9 +85,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func startStatusBarTimer() {
         statusBarTimer?.invalidate()
-        statusBarTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(settings.carouselInterval), repeats: true) { [weak self] _ in
+        // 创建一个强引用副本，避免在并发代码中直接引用self
+        let weakSelf = self
+        statusBarTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(settings.carouselInterval), repeats: true) { _ in
             Task { @MainActor in
-                self?.updateStatusBarTitle()
+                weakSelf.updateStatusBarTitle()
             }
         }
     }

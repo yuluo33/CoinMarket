@@ -3,15 +3,15 @@ import SwiftUI
 struct SearchBar: View {
     @Binding var text: String
     @FocusState private var isFocused: Bool
-    var placeholder: String = "搜索币种..."
-
+    @ObservedObject private var localizationManager = LocalizationManager.shared
+    
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.secondary)
                 .font(.system(size: 14, weight: .medium))
 
-            TextField(placeholder.localized, text: $text)
+            TextField(localizationManager.t("搜索币种..."), text: $text)
                 .textFieldStyle(.plain)
                 .font(.system(size: 14))
                 .focused($isFocused)
