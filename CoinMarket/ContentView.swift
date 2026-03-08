@@ -80,7 +80,7 @@ struct ContentView: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .background {
-                RoundedRectangle(cornerRadius: .infinity)
+                RoundedRectangle(cornerRadius: 10)
                     .fill(Color.gray.opacity(0.2))
             }
         }

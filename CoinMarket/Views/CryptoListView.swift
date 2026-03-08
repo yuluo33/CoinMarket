@@ -15,7 +15,7 @@ struct CryptoListView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
             LazyVStack(spacing: 10) {
-                ForEach(groupedCurrencies, id: \.self) { row in
+                ForEach(Array(groupedCurrencies.enumerated()), id: \.offset) { index, row in
                     HStack(spacing: 10) {
                         ForEach(row) { currency in
                             CryptoRowView(currency: currency)
