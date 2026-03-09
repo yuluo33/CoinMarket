@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct StatusBarView: View {
-    @ObservedObject var viewModel: CryptoViewModel
+    @ObservedObject var viewModel: CryptoViewModel = .shared
     @StateObject private var favoritesManager = FavoritesManager.shared
     
     private var settings: SettingsManager {
@@ -9,20 +9,19 @@ struct StatusBarView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("我的收藏".localized)
-                    .font(.headline)
+                    .font(.system(size: 16, weight: .semibold))
                 Spacer()
                 Text(settings.carouselInterval.localizedInterval)
-                    .font(.caption)
+                    .font(.system(size: 12))
                     .foregroundColor(.secondary)
             }
-            .padding(.bottom, 4)
             
-            HStack(spacing: 8) {
+            HStack(spacing: 10) {
                 Text("价格单位:".localized)
-                    .font(.caption)
+                    .font(.system(size: 13))
                     .foregroundColor(.secondary)
                 
                 Menu {
@@ -34,42 +33,47 @@ struct StatusBarView: View {
                                 await viewModel.loadCurrencies()
                             }
                         }) {
-                            HStack {
+                            HStack(spacing: 8) {
                                 Text(unit.symbol)
-                                    .font(.system(size: 12, weight: .semibold))
+                                    .font(.system(size: 14, weight: .semibold))
                                 Text(unit.name)
-                                    .font(.system(size: 12))
+                                    .font(.system(size: 14))
+                                Text(unit.displayName) // 显示法币简称
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.secondary)
                                 Spacer()
                                 if settings.priceUnit == unit {
                                     Image(systemName: "checkmark")
                                         .foregroundColor(.blue)
+                                        .font(.system(size: 12))
                                 }
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .frame(minWidth: 200) // 确保有足够宽度显示所有内容
                         }
                         .buttonStyle(.plain)
                     }
                 } label: {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 6) {
                         Text(settings.priceUnit.symbol)
-                            .font(.caption.weight(.bold))
+                            .font(.system(size: 14, weight: .bold))
                         Text(settings.priceUnit.name)
-                            .font(.caption)
+                            .font(.system(size: 14))
                         Image(systemName: "chevron.down")
-                            .font(.system(size: 8))
+                            .font(.system(size: 10))
                             .foregroundColor(.secondary)
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
                     .background {
                         Capsule()
                             .fill(.ultraThinMaterial)
+                            .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
                     }
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.bottom, 8)
             
             if favoritesManager.favoriteIds.isEmpty {
                 emptyState
@@ -79,35 +83,46 @@ struct StatusBarView: View {
             
             Spacer()
             
-            HStack {
-                Spacer()
-                Button("打开主窗口".localized) {
-                    NSApp.activate(ignoringOtherApps: true)
-                    if let window = NSApp.windows.first {
-                        window.makeKeyAndOrderFront(nil)
-                    }
+            Button("打开主窗口".localized) {
+                // 访问AppDelegate并调用openMainWindow方法
+                if let delegate = NSApp.delegate as? AppDelegate {
+                    delegate.openMainWindow()
                 }
-                .buttonStyle(.link)
             }
+            .font(.system(size: 14, weight: .medium))
+            .foregroundColor(.blue)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(.ultraThinMaterial)
+                    .stroke(Color.blue.opacity(0.2), lineWidth: 1)
+            }
+            .buttonStyle(.plain)
         }
-        .padding()
-        .frame(width: 300, height: 260)
+        .padding(20)
+        .frame(width: 360, height: 300) // 增大弹窗尺寸
+        .background {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.ultraThinMaterial)
+        }
     }
     
     private var emptyState: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             Image(systemName: "star")
-                .font(.system(size: 32))
+                .font(.system(size: 40))
                 .foregroundColor(.secondary)
             Text("暂无收藏".localized)
-                .font(.subheadline)
+                .font(.system(size: 16, weight: .medium))
                 .foregroundColor(.secondary)
             Text("点击货币旁的星标添加收藏".localized)
-                .font(.caption)
+                .font(.system(size: 13))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 20)
     }
     
     private var favoritesList: some View {
@@ -141,25 +156,30 @@ struct FavoriteRowView: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             Text(currency.symbol.uppercased())
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(size: 14, weight: .semibold))
+                .frame(minWidth: 40, alignment: .leading)
             
             Spacer()
             
             Text(displayPrice)
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(size: 14, weight: .medium))
+                .frame(minWidth: 80, alignment: .trailing)
             
             Text(currency.formattedChange)
-                .font(.system(size: 10, weight: .medium))
+                .font(.system(size: 12, weight: .medium))
                 .foregroundColor(priceChangeColor)
+                .frame(minWidth: 50, alignment: .trailing)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .background {
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: 10)
                 .fill(.ultraThinMaterial)
+                .stroke(Color.secondary.opacity(0.1), lineWidth: 1)
         }
+
     }
 }
 

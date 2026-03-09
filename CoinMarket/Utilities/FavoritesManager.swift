@@ -20,11 +20,21 @@ final class FavoritesManager: ObservableObject {
     private let key = "crypto_favorites"
     
     private init() {
-        if let data = UserDefaults.standard.data(forKey: key),
-           let ids = try? JSONDecoder().decode(Set<String>.self, from: data) {
-            self.favoriteIds = ids
-        } else {
-            self.favoriteIds = []
+        // 简化初始化逻辑，确保favoriteIds始终是Set<String>类型
+        // 直接尝试解码，如果失败则使用空集合
+        do {
+            if let data = UserDefaults.standard.data(forKey: key) {
+                // 尝试将数据解码为Set<String>
+                let ids = try JSONDecoder().decode(Set<String>.self, from: data)
+                self.favoriteIds = ids
+            } else {
+                // 如果没有数据，使用空集合
+                self.favoriteIds = Set<String>()
+            }
+        } catch {
+            // 如果解码失败，清理数据并使用空集合
+            UserDefaults.standard.removeObject(forKey: key)
+            self.favoriteIds = Set<String>()
         }
     }
     

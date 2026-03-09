@@ -78,7 +78,7 @@ struct SettingsView: View {
                 
                 VStack(spacing: 4) {
                     HStack(spacing: 4) {
-                        Text("Powered by ")
+                        Text("Powered by ".localized)
                             .font(.system(size: 12, weight: .regular))
                             .foregroundColor(.secondary)
                         
@@ -86,7 +86,7 @@ struct SettingsView: View {
                             .font(.system(size: 12, weight: .medium))
                             .foregroundColor(.blue)
                         
-                        Text(" & ")
+                        Text(" & ".localized)
                             .font(.system(size: 12, weight: .regular))
                             .foregroundColor(.secondary)
                         
@@ -96,7 +96,7 @@ struct SettingsView: View {
                     }
                     .padding(.top, 8)
                     
-                    Link("Designed by yuluo33", destination: URL(string: "https://github.com/yuluo33")!)
+                    Link("Designed by yuluo33".localized, destination: URL(string: "https://github.com/yuluo33")!)
                         .font(.system(size: 12, weight: .regular))
                         .foregroundColor(.blue)
                     .padding(.bottom, 16)

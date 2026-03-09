@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = CryptoViewModel()
+    @StateObject private var viewModel = CryptoViewModel.shared
     @StateObject private var settings = SettingsManager.shared
     @StateObject private var favoritesManager = FavoritesManager.shared
     @State private var showingSettings = false
@@ -43,8 +43,8 @@ struct ContentView: View {
             SettingsView()
         }
         .toast(isShowing: $showToast, type: toastType, message: toastMessage, duration: 1.5)
-        .onChange(of: favoritesManager.lastAction) {
-            if let action = favoritesManager.lastAction {
+        .onChange(of: favoritesManager.lastAction) { _, newValue in
+            if let action = newValue {
                 toastMessage = "\(action.action) \(action.coin)"
                 toastType = action.action == "已收藏".localized ? .success : .error
                 showToast = true

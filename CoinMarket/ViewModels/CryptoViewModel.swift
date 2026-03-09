@@ -4,6 +4,8 @@ import SwiftUI
 
 @MainActor
 final class CryptoViewModel: ObservableObject {
+    static let shared = CryptoViewModel()
+    
     @Published var currencies: [CryptoCurrency] = []
     @Published var filteredCurrencies: [CryptoCurrency] = []
     @Published var searchText: String = "" {
@@ -18,8 +20,9 @@ final class CryptoViewModel: ObservableObject {
     private let settings = SettingsManager.shared
     private var refreshTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
+    private var hasLoadedData = false
     
-    init() {
+    private init() {
         setupSettingsObserver()
         startAutoRefresh()
     }
@@ -85,8 +88,13 @@ final class CryptoViewModel: ObservableObject {
                 await self?.loadCurrencies()
             }
         }
-        Task {
-            await loadCurrencies()
+        
+        // 只在第一次启动时加载数据
+        if !hasLoadedData {
+            hasLoadedData = true
+            Task {
+                await loadCurrencies()
+            }
         }
     }
     

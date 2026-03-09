@@ -48,7 +48,10 @@ final class LocalizationManager: ObservableObject {
             "正在切换单位...": "正在切换单位...",
             "单位已切换": "单位已切换",
             "每秒更新": "每%@秒更新",
-            "选择价格单位": "选择价格单位"
+            "选择价格单位": "选择价格单位",
+            "Powered by ": "Powered by ",
+            " & ": " & ",
+            "Designed by yuluo33": "Designed by yuluo33"
         ],
         .en: [
             "设置": "Settings",
@@ -80,7 +83,10 @@ final class LocalizationManager: ObservableObject {
             "正在切换单位...": "Switching currency...",
             "单位已切换": "Currency switched",
             "每秒更新": "Update every %@s",
-            "选择价格单位": "Select Currency"
+            "选择价格单位": "Select Currency",
+            "Powered by ": "Powered by ",
+            " & ": " & ",
+            "Designed by yuluo33": "Designed by yuluo33"
         ],
         .ja: [
             "设置": "設定",
@@ -88,7 +94,7 @@ final class LocalizationManager: ObservableObject {
             "价格单位": "価格単位",
             "搜索币种": "コイン検索",
             "自动刷新间隔": "自動更新間隔",
-            "状态栏轮播間隔": "ステータスバー更新間隔",
+            "状态栏轮播间隔": "ステータスバー更新間隔",
             "API 数据源": "API データソース",
             "Powered by Binance": "Powered by Binance",
             "CoinMarket": "CoinMarket",
@@ -112,8 +118,10 @@ final class LocalizationManager: ObservableObject {
             "正在切换单位...": "通貨単位を変更中...",
             "单位已切换": "通貨単位を変更しました",
             "每秒更新": "%@秒ごとに更新",
-            "選択価格単位": "通貨を選択",
-            "选择价格单位": "通貨を選択"
+            "选择价格单位": "通貨を選択",
+            "Powered by ": "Powered by ",
+            " & ": " & ",
+            "Designed by yuluo33": "Designed by yuluo33"
         ],
         .ko: [
             "设置": "설정",
@@ -145,7 +153,10 @@ final class LocalizationManager: ObservableObject {
             "正在切换单位...": "통화 변경 중...",
             "单位已切换": "통화 변경됨",
             "每秒更新": "%@초마다 업데이트",
-            "选择价格单位": "통화 선택"
+            "选择价格单位": "통화 선택",
+            "Powered by ": "Powered by ",
+            " & ": " & ",
+            "Designed by yuluo33": "Designed by yuluo33"
         ],
         .vi: [
             "设置": "Cài đặt",
@@ -177,7 +188,10 @@ final class LocalizationManager: ObservableObject {
             "正在切换单位...": "Đang đổi tiền tệ...",
             "单位已切换": "Đã đổi tiền tệ",
             "每秒更新": "Cập nhật mỗi %@ giây",
-            "选择价格单位": "Chọn tiền tệ"
+            "选择价格单位": "Chọn tiền tệ",
+            "Powered by ": "Powered by ",
+            " & ": " & ",
+            "Designed by yuluo33": "Designed by yuluo33"
         ]
     ]
     
