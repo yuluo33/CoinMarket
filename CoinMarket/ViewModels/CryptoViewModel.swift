@@ -6,11 +6,9 @@ import SwiftUI
 final class CryptoViewModel: ObservableObject {
     static let shared = CryptoViewModel()
     
-    @Published var currencies: [CryptoCurrency] = []
-    @Published var filteredCurrencies: [CryptoCurrency] = []
-    @Published var searchText: String = "" {
-        didSet { filterCurrencies() }
-    }
+    @Published private(set) var categorizedCurrencies: [CryptoCategory: [CryptoCurrency]] = [:]
+    @Published var selectedCategory: CryptoCategory = .mainstream
+    @Published var searchText: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var lastUpdated: Date?
@@ -38,25 +36,30 @@ final class CryptoViewModel: ObservableObject {
                 self?.restartTimer()
             }
             .store(in: &cancellables)
+        
+        settings.$priceUnit
+            .dropFirst()
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    await self?.loadCurrencies()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func loadCurrencies() async {
-        let oldCurrencies = currencies
+        let oldCategorizedCurrencies = categorizedCurrencies
         isLoading = true
         errorMessage = nil
         
         do {
-            let fetchedCurrencies = try await apiService.fetchCryptoCurrencies(limit: 20)
-            withAnimation(.easeInOut(duration: 0.3)) {
-                self.currencies = fetchedCurrencies
-                self.lastUpdated = Date()
-                filterCurrencies()
-            }
+            let fetchedCurrencies = try await apiService.fetchAllCryptoCurrencies(limitPerCategory: 20)
+            categorizedCurrencies = fetchedCurrencies
+            lastUpdated = Date()
         } catch {
-            errorMessage = error.localizedDescription
-            if currencies.isEmpty {
-                currencies = oldCurrencies
-                filterCurrencies()
+            if oldCategorizedCurrencies.isEmpty {
+                errorMessage = error.localizedDescription
+                categorizedCurrencies = oldCategorizedCurrencies
             }
         }
         
@@ -69,16 +72,38 @@ final class CryptoViewModel: ObservableObject {
         isRefreshing = false
     }
     
-    private func filterCurrencies() {
-        if searchText.isEmpty {
-            filteredCurrencies = currencies
-        } else {
-            let lowercasedSearch = searchText.lowercased()
-            filteredCurrencies = currencies.filter {
-                $0.name.lowercased().contains(lowercasedSearch) ||
-                $0.symbol.lowercased().contains(lowercasedSearch)
+    var currencies: [CryptoCurrency] {
+        mergedCurrencies(from: categorizedCurrencies)
+    }
+    
+    var filteredCurrencies: [CryptoCurrency] {
+        let baseCurrencies = categorizedCurrencies[selectedCategory] ?? []
+        let normalizedSearch = searchText
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        
+        guard !normalizedSearch.isEmpty else {
+            return baseCurrencies
+        }
+        
+        return baseCurrencies.filter {
+            $0.name.lowercased().contains(normalizedSearch) ||
+            $0.symbol.lowercased().contains(normalizedSearch)
+        }
+    }
+    
+    private func mergedCurrencies(from source: [CryptoCategory: [CryptoCurrency]]) -> [CryptoCurrency] {
+        var merged: [CryptoCurrency] = []
+        
+        for category in CryptoCategory.allCases {
+            guard let categoryCurrencies = source[category] else { continue }
+            
+            for currency in categoryCurrencies where !merged.contains(where: { $0.id == currency.id }) {
+                merged.append(currency)
             }
         }
+        
+        return merged
     }
     
     private func startAutoRefresh() {
@@ -89,7 +114,6 @@ final class CryptoViewModel: ObservableObject {
             }
         }
         
-        // 只在第一次启动时加载数据
         if !hasLoadedData {
             hasLoadedData = true
             Task {

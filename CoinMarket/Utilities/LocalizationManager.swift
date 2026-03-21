@@ -5,11 +5,9 @@ final class LocalizationManager: ObservableObject {
     static let shared = LocalizationManager()
     
     private let settings = SettingsManager.shared
-    
     private var cancellables = Set<AnyCancellable>()
     
     private init() {
-        // 监听语言变化，触发objectWillChange
         settings.$language
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
@@ -49,6 +47,8 @@ final class LocalizationManager: ObservableObject {
             "单位已切换": "单位已切换",
             "每秒更新": "每%@秒更新",
             "选择价格单位": "选择价格单位",
+            "主流币": "主流币",
+            "Meme币": "Meme币",
             "Powered by ": "Powered by ",
             " & ": " & ",
             "Designed by yuluo33": "Designed by yuluo33"
@@ -84,6 +84,8 @@ final class LocalizationManager: ObservableObject {
             "单位已切换": "Currency switched",
             "每秒更新": "Update every %@s",
             "选择价格单位": "Select Currency",
+            "主流币": "Majors",
+            "Meme币": "Meme Coins",
             "Powered by ": "Powered by ",
             " & ": " & ",
             "Designed by yuluo33": "Designed by yuluo33"
@@ -119,6 +121,8 @@ final class LocalizationManager: ObservableObject {
             "单位已切换": "通貨単位を変更しました",
             "每秒更新": "%@秒ごとに更新",
             "选择价格单位": "通貨を選択",
+            "主流币": "メジャー",
+            "Meme币": "ミームコイン",
             "Powered by ": "Powered by ",
             " & ": " & ",
             "Designed by yuluo33": "Designed by yuluo33"
@@ -154,6 +158,8 @@ final class LocalizationManager: ObservableObject {
             "单位已切换": "통화 변경됨",
             "每秒更新": "%@초마다 업데이트",
             "选择价格单位": "통화 선택",
+            "主流币": "메이저 코인",
+            "Meme币": "밈 코인",
             "Powered by ": "Powered by ",
             " & ": " & ",
             "Designed by yuluo33": "Designed by yuluo33"
@@ -189,6 +195,8 @@ final class LocalizationManager: ObservableObject {
             "单位已切换": "Đã đổi tiền tệ",
             "每秒更新": "Cập nhật mỗi %@ giây",
             "选择价格单位": "Chọn tiền tệ",
+            "主流币": "Coin chính",
+            "Meme币": "Coin meme",
             "Powered by ": "Powered by ",
             " & ": " & ",
             "Designed by yuluo33": "Designed by yuluo33"

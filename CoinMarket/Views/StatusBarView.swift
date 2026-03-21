@@ -3,10 +3,7 @@ import SwiftUI
 struct StatusBarView: View {
     @ObservedObject var viewModel: CryptoViewModel = .shared
     @StateObject private var favoritesManager = FavoritesManager.shared
-    
-    private var settings: SettingsManager {
-        SettingsManager.shared
-    }
+    @StateObject private var settings = SettingsManager.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -25,20 +22,16 @@ struct StatusBarView: View {
                     .foregroundColor(.secondary)
                 
                 Menu {
-                    ForEach(PriceUnit.allCases, id: \.self) {
-                        unit in
+                    ForEach(PriceUnit.allCases, id: \.self) { unit in
                         Button(action: {
                             settings.priceUnit = unit
-                            Task {
-                                await viewModel.loadCurrencies()
-                            }
                         }) {
                             HStack(spacing: 8) {
                                 Text(unit.symbol)
                                     .font(.system(size: 14, weight: .semibold))
                                 Text(unit.name)
                                     .font(.system(size: 14))
-                                Text(unit.displayName) // 显示法币简称
+                                Text(unit.displayName)
                                     .font(.system(size: 12, weight: .medium))
                                     .foregroundColor(.secondary)
                                 Spacer()
@@ -50,7 +43,7 @@ struct StatusBarView: View {
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
-                            .frame(minWidth: 200) // 确保有足够宽度显示所有内容
+                            .frame(minWidth: 200)
                         }
                         .buttonStyle(.plain)
                     }
@@ -84,7 +77,6 @@ struct StatusBarView: View {
             Spacer()
             
             Button("打开主窗口".localized) {
-                // 访问AppDelegate并调用openMainWindow方法
                 if let delegate = NSApp.delegate as? AppDelegate {
                     delegate.openMainWindow()
                 }
@@ -101,7 +93,7 @@ struct StatusBarView: View {
             .buttonStyle(.plain)
         }
         .padding(20)
-        .frame(width: 360, height: 300) // 增大弹窗尺寸
+        .frame(width: 360, height: 300)
         .background {
             RoundedRectangle(cornerRadius: 12)
                 .fill(.ultraThinMaterial)
@@ -148,11 +140,7 @@ struct FavoriteRowView: View {
     }
     
     private var displayPrice: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencySymbol = SettingsManager.shared.priceUnit.symbol
-        formatter.maximumFractionDigits = currency.currentPrice >= 1 ? 2 : 6
-        return formatter.string(from: NSNumber(value: currency.currentPrice)) ?? "\(SettingsManager.shared.priceUnit.symbol)0.00"
+        PriceDisplayFormatter.currencyString(for: currency.currentPrice, unit: SettingsManager.shared.priceUnit)
     }
     
     var body: some View {
@@ -179,7 +167,6 @@ struct FavoriteRowView: View {
                 .fill(.ultraThinMaterial)
                 .stroke(Color.secondary.opacity(0.1), lineWidth: 1)
         }
-
     }
 }
 

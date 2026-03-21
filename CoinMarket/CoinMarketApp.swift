@@ -184,11 +184,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     private func formatPrice(_ price: Double, unit: PriceUnit) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = price >= 1 ? 2 : 6
-        formatter.minimumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: price)) ?? "0.00"
+        PriceDisplayFormatter.decimalString(for: price)
     }
     
     @objc func togglePopover() {

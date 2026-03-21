@@ -14,11 +14,7 @@ struct CryptoRowView: View {
     }
     
     private var displayPrice: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencySymbol = settings.priceUnit.symbol
-        formatter.maximumFractionDigits = currency.currentPrice >= 1 ? 2 : 6
-        return formatter.string(from: NSNumber(value: currency.currentPrice)) ?? "\(settings.priceUnit.symbol)0.00"
+        PriceDisplayFormatter.currencyString(for: currency.currentPrice, unit: settings.priceUnit)
     }
     
     var body: some View {

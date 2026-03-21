@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = CryptoViewModel.shared
-    @StateObject private var settings = SettingsManager.shared
     @StateObject private var favoritesManager = FavoritesManager.shared
     @State private var showingSettings = false
     @State private var showToast = false
@@ -29,7 +28,7 @@ struct ContentView: View {
                 
                 if viewModel.isLoading && viewModel.currencies.isEmpty {
                     loadingView
-                } else if let error = viewModel.errorMessage {
+                } else if let error = viewModel.errorMessage, viewModel.currencies.isEmpty {
                     errorView(message: error)
                 } else if viewModel.filteredCurrencies.isEmpty {
                     emptyView
@@ -58,10 +57,13 @@ struct ContentView: View {
                 .font(.system(size: 22, weight: .bold))
                 .foregroundColor(.primary)
             
-            Spacer()
+            Spacer(minLength: 16)
+            
+            categoryPicker
+                .frame(width: 200)
             
             SearchBar(text: $viewModel.searchText)
-                .frame(width: 200)
+                .frame(width: 220)
             
             Button(action: {
                 showingSettings = true
@@ -78,6 +80,17 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
         }
+    }
+    
+    private var categoryPicker: some View {
+        Picker("", selection: $viewModel.selectedCategory) {
+            ForEach(CryptoCategory.allCases) { category in
+                Text(category.titleKey.localized)
+                    .tag(category)
+            }
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
     }
     
     private var loadingView: some View {
